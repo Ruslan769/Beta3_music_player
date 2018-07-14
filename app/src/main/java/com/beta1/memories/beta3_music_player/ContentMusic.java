@@ -15,8 +15,6 @@ public class ContentMusic extends AppCompatActivity {
     ImageButton btnPlay, btnPrev, btnNext;
     SeekBar seekBarSong;
 
-    SongService mSongService;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,18 +26,14 @@ public class ContentMusic extends AppCompatActivity {
         seekBarSong = findViewById(R.id.seekBarSong);
 
         dataExtra();
-        mSongService.playSong();
     }
 
     private void dataExtra() {
         Bundle bundle = getIntent().getExtras();
-        mSongService = bundle.getParcelable("service");
 
-        Song arSong = mSongService.getList();
-
-        Bitmap albumB = arSong.getAlbumB();
-        String artist = arSong.getArtist();
-        String title = arSong.getTitle();
+        Bitmap albumB = bundle.getParcelable("album");
+        String artist = bundle.getString("artist");
+        String title = bundle.getString("title");
 
         ImageView imgContentAlbum = findViewById(R.id.imgContentAlbum);
         imgContentAlbum.setImageBitmap(albumB);
