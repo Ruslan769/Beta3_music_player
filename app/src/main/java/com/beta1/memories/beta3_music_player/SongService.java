@@ -98,9 +98,9 @@ public class SongService extends Service {
         mp.pause();
     }
 
-    public void startPlay() {
+/*    public void startPlay() {
         mp.start();
-    }
+    }*/
 
     public void seekPlayer(int position) {
         mp.seekTo(position);
