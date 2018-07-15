@@ -1,11 +1,13 @@
 package com.beta1.memories.beta3_music_player;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -29,30 +31,47 @@ import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_EXTERNAL_STORAGE_PERMISSION = 200;
-    private String[] arPermissions = {
+    public static final String START_G_SONG = "start_g";
+    public static final String START_SONG = "start";
+    public static final String STOP_SONG = "stop";
+    public static final String PREV_SONG = "prev";
+    public static final String NEXT_SONG = "next";
+
+    private final int REQUEST_EXTERNAL_STORAGE_PERMISSION = 200;
+    private final String[] arPermissions = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.WAKE_LOCK
     };
+    //public static String BROADCAST_ACTION;
 
-    private SongService mSongService;
+    public static SongService mSongService;
     private Intent songIntent;
     private boolean songBound = false;
     private boolean isPermission = false;
 
-    private ArrayList<Song> songList;
+    public static final ArrayList<Song> songList = new ArrayList();
     private ListView songView;
+
+/*    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            controlSong(intent);
+        }
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        songList = new ArrayList();
+        //BROADCAST_ACTION = getPackageName();
+
         songView = findViewById(R.id.lvContainer);
 
         if (hasPermissions()) {
@@ -91,10 +110,14 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         if (mSongService != null) {
+            mSongService.mManager.cancel(mSongService.NOTIFY_ID);
             stopService(songIntent);
             mSongService = null;
             Log.d("myLog", "mSongService = null");
         }
+
+        // выключаем BroadcastReceiver
+        //unregisterReceiver(mIntentReceiver);
     }
 
     private boolean hasPermissions(){
@@ -150,6 +173,32 @@ public class MainActivity extends AppCompatActivity {
         SongAdapter songAdapter = new SongAdapter(this, songList);
         songView.setAdapter(songAdapter);
         songView.setOnItemClickListener(new clickItemSong());
+
+        // создаем фильтр для BroadcastReceiver
+        /*final IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
+        // регистрируем (включаем) BroadcastReceiver
+        registerReceiver(mIntentReceiver, intentFilter);*/
+    }
+
+    private void controlSong(Intent intent) {
+        final String command = intent.getStringExtra("command");
+        switch (command) {
+            case START_G_SONG:
+                mSongService.playSong();
+                break;
+            case START_SONG:
+                mSongService.startPlay();
+                break;
+            case STOP_SONG:
+                mSongService.pausePlayer();
+                break;
+            case PREV_SONG:
+                mSongService.prevSong();
+                break;
+            case NEXT_SONG:
+                mSongService.nextSong();
+                break;
+        }
     }
 
     public Bitmap getAlbumart(Long album_id) {
@@ -223,12 +272,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*int tag = Integer.valueOf(String.valueOf(view.getTag()));
-            Song arSelectSong = songList.get(tag);*/
-            mSongService.setSong(position);
+
+            if (mSongService.getPositionSong() != position) {
+                mSongService.setSong(position);
+                mSongService.playSong();
+            }
+            //int tag = Integer.valueOf(String.valueOf(view.getTag()));
 
             Intent intent = new Intent(MainActivity.this, ContentMusic.class);
-            intent.putExtra("service", (Parcelable) mSongService);
             startActivity(intent);
         }
     }
