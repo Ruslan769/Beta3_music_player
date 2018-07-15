@@ -3,4 +3,6 @@
     <string name="error_permission">К сожалению вы не предоставили доступ на чтение данных :(</string>
     <string name="desc_image_song">Изображение музыки</string>
     <string name="desc_image_content_song">Изображение контента музыки</string>
+    <string name="artist_name">Artist Name</string>
+    <string name="song_name">Song Name</string>
 </resources>
