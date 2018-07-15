@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#C2185B</color>
     <color name="colorAccent">#FF4081</color>
     <color name="red">#ef0e5a</color>
-    <color name="filterContentImage">#bfcdcdcd</color>
+    <color name="filterContentImage">#000000</color>
 </resources>

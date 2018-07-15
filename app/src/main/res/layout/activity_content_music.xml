@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Artist Name"
+        android:text="@string/artist_name"
         android:textAlignment="center"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="20sp"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Song Name"
+        android:text="@string/song_name"
         android:textColor="#fff"
         app:layout_constraintEnd_toEndOf="@+id/imgContentAlbumMin"
         app:layout_constraintStart_toStartOf="@+id/imgContentAlbumMin"
@@ -84,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="@+id/imgContentAlbumMin"
         app:layout_constraintStart_toStartOf="@+id/imgContentAlbumMin"
         app:layout_constraintTop_toBottomOf="@+id/tvArtistNameContent"
-        app:srcCompat="@drawable/ic_action_play" />
+        app:srcCompat="@drawable/ic_action_pause" />
 
     <ImageButton
         android:id="@+id/btnNext"
@@ -105,12 +105,15 @@
         android:id="@+id/seekBarSong"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:max="10"
         android:progress="3"
         android:progressTint="@color/colorPrimary"
         android:thumbTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/imgContentAlbum"
         app:layout_constraintEnd_toEndOf="@+id/btnPlay"
         app:layout_constraintStart_toStartOf="@+id/btnPlay"
         app:layout_constraintTop_toBottomOf="@+id/btnPlay" />
