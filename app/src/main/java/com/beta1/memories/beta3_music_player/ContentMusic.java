@@ -2,6 +2,7 @@ package com.beta1.memories.beta3_music_player;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -37,10 +38,10 @@ public class ContentMusic extends AppCompatActivity {
         btnPrev.setOnClickListener(new eventButton());
         btnNext.setOnClickListener(new eventButton());
 
-        /*if (!MainActivity.mSongService.isPlaying()) {
+        if (!MainActivity.mSongService.isPlaying() && !getIntent().hasExtra("startPlay")) {
             btnPlay.setImageResource(R.drawable.ic_action_play);
-        }*/
-        System.out.println(MainActivity.mSongService.isPlaying());
+        }
+
         setContentSong();
         //startSong(MainActivity.START_G_SONG);
     }
@@ -145,5 +146,8 @@ public class ContentMusic extends AppCompatActivity {
 
         TextView tvSongNameContent = findViewById(R.id.tvSongNameContent);
         tvSongNameContent.setText(title);
+
+        seekBarSong.setMax(MainActivity.mSongService.getDuration() / 1000);
+
     }
 }

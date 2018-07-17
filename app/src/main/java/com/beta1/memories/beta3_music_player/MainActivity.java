@@ -273,13 +273,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            if (mSongService.getPositionSong() != position) {
-                mSongService.setSong(position);
-                mSongService.playSong();
-            }
             //int tag = Integer.valueOf(String.valueOf(view.getTag()));
 
             Intent intent = new Intent(MainActivity.this, ContentMusic.class);
+            if (mSongService.getPositionSong() != position) {
+                mSongService.setSong(position);
+                mSongService.playSong();
+                intent.putExtra("startPlay", 1);
+            }
             startActivity(intent);
         }
     }

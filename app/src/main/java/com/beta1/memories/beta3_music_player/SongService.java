@@ -94,7 +94,7 @@ public class SongService extends Service implements
         return songsList.get(positionSong);
     }
 
-    public int getPosition() {
+    public int getCurrentPosition() {
         return mp.getCurrentPosition();
     }
 
