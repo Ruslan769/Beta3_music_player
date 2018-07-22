@@ -3,9 +3,11 @@ package com.beta1.memories.beta3_music_player;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -15,26 +17,34 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SongService extends Service implements
+public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
 
+    public static final String BROADCAST_ACTION = "com.beta3_music.control_music";
+    public static final String PLAY_ACTION = "play";
+    public static final String START_ACTION = "start";
+    public static final String PAUSE_ACTION = "pause";
+
+    private Intent intentBroadcast;
     private final IBinder binder = new MusicBinder();
     private MediaPlayer mp;
     private ArrayList<Song> songsList;
-    private int positionSong = -1;
+    private int position = -1;
 
-    public NotificationManager mManager;
+    private NotificationManager mManager;
     private String songTitle;
-    public final int NOTIFY_ID = 1;
+    private final int NOTIFY_ID = 1;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        intentBroadcast = new Intent(BROADCAST_ACTION);
         mp = new MediaPlayer();
         mp.setLooping(true);
         mp.setOnCompletionListener(this);
@@ -66,22 +76,33 @@ public class SongService extends Service implements
         }
     }
 
+    private void putIntentCommand(String command) {
+        intentBroadcast.putExtra("command", command);
+        sendBroadcast(intentBroadcast);
+    }
+
+    public void notifManagerCancel() {
+        mManager.cancel(NOTIFY_ID);
+    }
+
     public void setList(ArrayList<Song> arr) {
         this.songsList = arr;
     }
 
-    public void setSong(int songIndex) {
-        this.positionSong = songIndex;
+    public void setPosition(int position) {
+        this.position = position;
+        Log.d("myLog", String.valueOf("set position = " + position));
     }
 
-    public void playSong() {
+    public void play() {
         mp.reset();
-        Song arSong = songsList.get(positionSong);
+        final Song arSong = songsList.get(position);
+        Log.d("myLog", String.valueOf("play position = " + position));
 
-        this.songTitle = arSong.getTitle();
-        long id = arSong.getId();
+        songTitle = arSong.getTitle();
+        final long id = arSong.getId();
 
-        Uri trackUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+        final Uri trackUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
         try {
             mp.setDataSource(getApplicationContext(), trackUri);
         } catch (IOException e) {
@@ -91,18 +112,19 @@ public class SongService extends Service implements
     }
 
     public Song getList() {
-        return songsList.get(positionSong);
+        return songsList.get(position);
     }
 
-    public int getCurrentPosition() {
+    public long getCurrentPosition() {
         return mp.getCurrentPosition();
     }
 
-    public int getPositionSong() {
-        return positionSong;
+    public int position() {
+        Log.d("myLog", String.valueOf("get position = " + position));
+        return position;
     }
 
-    public int getDuration() {
+    public long duration() {
         return mp.getDuration();
     }
 
@@ -110,45 +132,50 @@ public class SongService extends Service implements
         return mp.isPlaying();
     }
 
-    public void pausePlayer() {
+    public void pause() {
         mp.pause();
+        putIntentCommand(PAUSE_ACTION);
     }
 
-    public void startPlay() {
+    public void start() {
         mp.start();
+        putIntentCommand(START_ACTION);
     }
 
-    public void seekPlayer(int position) {
-        mp.seekTo(position);
+    public long seek(final long whereto) {
+        mp.seekTo((int) whereto);
+        return whereto;
     }
 
-    public void prevSong() {
-        if (positionSong > 0) {
-            positionSong --;
+    public void prev() {
+        if (position > 0) {
+            position --;
         } else {
-            positionSong = songsList.size() - 1;
+            position = songsList.size() - 1;
         }
-        playSong();
+        play();
     }
 
-    public void nextSong() {
+    public void next() {
+        Log.d("myLog", "пришел next");
         int sizeSong = songsList.size() - 1;
         if (sizeSong == 0) {
             return;
         }
-        if (positionSong < sizeSong) {
-            positionSong ++;
+        if (position < sizeSong) {
+            position ++;
         } else {
-            positionSong = 0;
+            position = 0;
         }
-        playSong();
+        play();
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
         if (mp.getCurrentPosition() > 0) {
             mp.reset();
-            nextSong();
+            next();
+            Log.d("myLog", String.valueOf("next onCompletion"));
         }
     }
 
@@ -161,6 +188,7 @@ public class SongService extends Service implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        putIntentCommand(PLAY_ACTION); // broadcast
         Intent intent = new Intent(this, ContentMusic.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -182,8 +210,8 @@ public class SongService extends Service implements
     }
 
     public class MusicBinder extends Binder {
-        SongService getService() {
-            return SongService.this;
+        MusicService getService() {
+            return MusicService.this;
         }
     }
 }

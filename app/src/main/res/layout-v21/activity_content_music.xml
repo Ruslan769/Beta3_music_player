@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ed_sherren_bck" />
+        android:src="@drawable/ed_sherren_bg"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgContentAlbumMin"
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/artist_name"
+        android:text=""
         android:textAlignment="center"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="20sp"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="@string/song_name"
+        android:text=""
         android:textColor="#fff"
         app:layout_constraintEnd_toEndOf="@+id/imgContentAlbumMin"
         app:layout_constraintStart_toStartOf="@+id/imgContentAlbumMin"
@@ -110,7 +110,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:max="10"
-        android:progress="3"
+        android:progress="0"
         android:progressTint="@color/colorPrimary"
         android:thumbTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/imgContentAlbum"
@@ -119,22 +119,27 @@
         app:layout_constraintTop_toBottomOf="@+id/btnPlay" />
 
     <TextView
-        android:id="@+id/tvLeftSong"
+        android:id="@+id/tvTimeLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        android:text="-1:23"
+        android:layout_marginTop="8dp"
+        android:text="0:00"
         android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="@+id/seekBarSong"
-        app:layout_constraintStart_toEndOf="@+id/seekBarSong" />
+        app:layout_constraintStart_toEndOf="@+id/seekBarSong"
+        app:layout_constraintTop_toTopOf="@+id/seekBarSong" />
 
     <TextView
-        android:id="@+id/tvHasPassedSong"
+        android:id="@+id/tvTimePassed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="2dp"
+        android:layout_marginTop="8dp"
         android:text="0:00"
         app:layout_constraintBottom_toBottomOf="@+id/seekBarSong"
-        app:layout_constraintEnd_toStartOf="@+id/seekBarSong" />
+        app:layout_constraintEnd_toStartOf="@+id/seekBarSong"
+        app:layout_constraintTop_toTopOf="@+id/seekBarSong"
+        app:layout_constraintVertical_bias="0.888" />
 
 </android.support.constraint.ConstraintLayout>

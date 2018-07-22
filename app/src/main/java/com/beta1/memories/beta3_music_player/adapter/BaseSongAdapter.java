@@ -1,4 +1,4 @@
-package com.beta1.memories.beta3_music_player;
+package com.beta1.memories.beta3_music_player.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,14 +8,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beta1.memories.beta3_music_player.R;
+import com.beta1.memories.beta3_music_player.Song;
+
 import java.util.ArrayList;
 
-public class SongAdapter extends BaseAdapter {
+public class BaseSongAdapter extends BaseAdapter {
 
     Context context;
     ArrayList<Song> arSong;
 
-    public SongAdapter(Context context, ArrayList<Song> arSong) {
+    public BaseSongAdapter(Context context, ArrayList<Song> arSong) {
         this.context = context;
         this.arSong = arSong;
     }
